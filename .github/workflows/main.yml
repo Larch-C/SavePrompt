@@ -1,0 +1,33 @@
+name: Fetch Prompts and Push
+
+on:
+  schedule:
+    - cron: '0 * * * *' # 每小时执行一次
+  workflow_dispatch:
+
+jobs:
+  fetch-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Fetch prompts from API
+        run: |
+          curl -sSL "https://www.jasongjz.top/api/v1/prompts/?skip=0&limit=9000" -o prompts.json
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'Larch-C'
+          git config --global user.email 'tr@wenturc.com'
+          git add prompts.json
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore: update prompts.json from API"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
