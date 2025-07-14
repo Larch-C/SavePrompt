@@ -1,26 +1,28 @@
 name: Fetch Prompts and Push
-
 on:
   schedule:
     - cron: '0 * * * *' # 每小时执行一次
   workflow_dispatch:
-
 jobs:
   fetch-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      
       - name: Fetch prompts from API
         run: |
           filename="prompts_$(date +%Y%m%d_%H%M%S).json"
           curl -sSL "https://www.jasongjz.top/api/v1/prompts/?skip=0&limit=9000" | jq '.' > "$filename"
           echo "$filename" > version.txt
           echo "Saved as $filename"
-
+          # 将 filename 设置为环境变量，供后续步骤使用
+          echo "FILENAME=$filename" >> $GITHUB_ENV
+      
       - name: Update README
         run: |
+          # 使用从前一步骤传递的环境变量
+          filename="$FILENAME"
           # 如果 README.md 中没有"当前版本："这一行，就追加
           if ! grep -q "当前版本：" README.md; then
             echo "当前版本：$filename" >> README.md
@@ -28,7 +30,7 @@ jobs:
             # 使用 sed 替换包含"当前版本："的行
             sed -i "s/当前版本：.*$/当前版本：$filename/" README.md
           fi
-
+      
       - name: Commit and push changes
         run: |
           git config --global user.name 'Larch-C'
@@ -38,4 +40,4 @@ jobs:
           git commit --author="IGCrystal <IGCrystal@wenturc.com>" -m "chore: add new prompts snapshot"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
