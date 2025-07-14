@@ -12,14 +12,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
       - name: Fetch prompts from API
         run: |
-          curl -sSL "https://www.jasongjz.top/api/v1/prompts/?skip=0&limit=9000" -o prompts.json
+          curl -sSL "https://www.jasongjz.top/api/v1/prompts/?skip=0&limit=9000" | jq '.' > prompts.json
 
       - name: Commit and push changes
         run: |
