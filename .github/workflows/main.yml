@@ -24,8 +24,7 @@ jobs:
           git config --global user.email 'tr@wenturc.com'
           git add prompts_*.json
           git diff --cached --quiet && echo "No changes to commit" && exit 0
-          echo "chore: add new prompts snapshot\n\nCo-authored-by: Larch-C <tr@wenturc.com>\nCo-authored-by: IGCrystal <IGCrystal@wenturc.com>" > commitmsg.txt
-          git commit -F commitmsg.txt
+          git commit --author="IGCrystal <IGCrystal@wenturc.com>" -m "chore: add new prompts snapshot"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
