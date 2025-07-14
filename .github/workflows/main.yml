@@ -25,6 +25,8 @@ jobs:
           filename="$FILENAME"
           # 如果 README.md 中没有"当前版本："这一行，就追加
           if ! grep -q "当前版本：" README.md; then
+            # 确保文件末尾有换行符，然后添加新行
+            echo "" >> README.md
             echo "当前版本：$filename" >> README.md
           else
             # 使用 sed 替换包含"当前版本："的行
