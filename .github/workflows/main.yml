@@ -13,7 +13,32 @@ jobs:
       - name: Fetch prompts from API
         run: |
           filename="prompts_$(date +%Y%m%d_%H%M%S).json"
-          curl -sSL "https://www.jasongjz.top/api/v1/prompts/?skip=0&limit=9000" | jq '.' > "$filename"
+          # 添加重试机制和超时设置
+          # --retry 3: 最多重试3次
+          # --retry-delay 5: 每次重试间隔5秒
+          # --max-time 60: 最大超时时间60秒
+          # -f: 对于HTTP错误返回非零状态码
+          curl -sSL --retry 3 --retry-delay 5 --max-time 60 -f "https://www.jasongjz.top/api/v1/prompts/?skip=0&limit=9000" | jq '.' > "$filename"
+          
+          # 检查文件是否为空
+          if [ ! -s "$filename" ]; then
+            echo "下载的文件为空，尝试使用上一次的文件"
+            # 读取上一次的文件名
+            if [ -f version.txt ]; then
+              last_file=$(cat version.txt)
+              if [ -n "$last_file" ] && [ -f "$last_file" ] && [ -s "$last_file" ]; then
+                echo "使用上一次的文件: $last_file"
+                cp "$last_file" "$filename"
+              else
+                echo "上一次的文件不可用"
+                exit 1
+              fi
+            else
+              echo "没有 version.txt 文件"
+              exit 1
+            fi
+          fi
+          
           echo "$filename" > version.txt
           echo "Saved as $filename"
           # 将 filename 设置为环境变量，供后续步骤使用
