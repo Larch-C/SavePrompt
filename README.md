@@ -8,3 +8,5 @@ haha 🐶 might bolt 😂
 你知道的，小狮子狗可能会跑路
 
 # 当前版本：prompts_20250714_082038.json
+
+## 当前版本：[prompts_20250714_082303.json](https://github.com/Larch-C/SavePrompt/blob/main/prompts_20250714_082303.json)
