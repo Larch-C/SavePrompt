@@ -1,7 +1,7 @@
 name: Fetch Prompts and Push
 on:
   schedule:
-    - cron: '0 * * * *' # 每小时执行一次
+    - cron: '*/6 * * * *' # 每小时执行一次
   workflow_dispatch:
 jobs:
   fetch-and-push:
