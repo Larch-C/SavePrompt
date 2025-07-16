@@ -86,4 +86,4 @@ jobs:
           git commit --author="IGCrystal <IGCrystal@wenturc.com>" -m "chore: add new prompts snapshot"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
